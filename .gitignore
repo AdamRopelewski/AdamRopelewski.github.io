@@ -23,9 +23,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-# Sensitive & generated
-profile.json
-
 
 # Static build output
 dist/
