@@ -9,7 +9,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="alternate icon" href="assets/profile.svg" type="image/svg+xml">
 </head>
-<body class="dark">
+<body class="dark is-loading" aria-busy="true">
   <header class="site-header">
     <a class="brand left" href="./" id="brandLink" aria-label="Go to homepage">
       <img class="logo" src="assets/profile.svg" alt="Profile">
@@ -102,6 +102,12 @@
     <p>&copy; <span id="year"></span> <span data-i18n="name">Loading...</span></p>
   </footer>
 
+  <div id="site-loader" class="site-loader" role="status" aria-live="polite" aria-label="Loading site">
+    <div class="loader-inner" aria-hidden="true">
+      <div class="spinner" aria-hidden="true"></div>
+      <span class="loader-text">Loading site…</span>
+    </div>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
