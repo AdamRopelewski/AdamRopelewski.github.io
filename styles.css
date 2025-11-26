@@ -1,0 +1,374 @@
+:root {
+    --bg: #0b0f12;
+    --panel: #0f1416;
+    --muted: #9aa5ad;
+    --accent: #7dd3fc;
+    --text: #e6eef2;
+    --border: rgba(255, 255, 255, 0.06);
+}
+
+:root.light {
+    --bg: #f6f8f9;
+    --panel: #ffffff;
+    --muted: #4b5563;
+    --accent: #0369a1;
+    --text: #0b1220;
+    --border: rgba(11, 18, 32, 0.08)
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%
+}
+
+/* allow browsers to render form controls in theme-aware colors */
+html {
+    color-scheme: dark
+}
+
+html.light {
+    color-scheme: light
+}
+
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+    transition: background .25s ease, border-color .25s ease
+}
+
+.site-header .left {
+    display: flex;
+    gap: 12px;
+    align-items: center
+}
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, Segoe UI, Roboto, 'Helvetica Neue', Arial;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    transition: background .28s ease, color .28s ease
+}
+
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent)
+}
+
+.site-header .left {
+    display: flex;
+    gap: 12px;
+    align-items: center
+}
+
+.brand {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text)
+}
+
+.logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), #6ee7b7);
+    padding: 6px;
+    box-shadow: 0 4px 12px rgba(2, 6, 23, 0.5);
+    transition: transform .28s ease, box-shadow .28s ease
+}
+
+.brand:hover .logo {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 28px rgba(2, 6, 23, 0.6)
+}
+
+.subtitle {
+    color: var(--muted);
+    margin: 2px 0 0
+}
+
+.controls {
+    display: flex;
+    gap: 8px;
+    align-items: center
+}
+
+#langSelect,
+.lang-switch select {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 6px;
+    min-width: 88px;
+    cursor: pointer
+}
+
+.lang-switch {
+    position: relative;
+    display: inline-block
+}
+
+.lang-switch select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 34px
+}
+
+.lang-switch select:focus {
+    outline: 2px solid rgba(125, 211, 252, 0.16);
+    box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.06)
+}
+
+select#langSelect option {
+    background: var(--panel);
+    color: var(--text)
+}
+
+.lang-switch::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--muted);
+    border-bottom: 2px solid var(--muted);
+    pointer-events: none
+}
+
+select#langSelect option {
+    background: var(--panel);
+    color: var(--text)
+}
+
+#themeToggle {
+    background: transparent;
+    border: 0;
+    color: var(--text);
+    font-size: 18px;
+    padding: 6px;
+    cursor: pointer;
+    transition: transform .32s ease
+}
+
+.theme-toggle-anim {
+    transform: rotate(360deg) scale(1.08)
+}
+
+main {
+    max-width: 1100px;
+    margin: 28px auto;
+    padding: 0 18px
+}
+
+.hero{
+    background: linear-gradient(120deg, rgba(125,211,252,0.02), transparent);
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+}
+.hero-inner{display:flex;align-items:center;gap:18px;justify-content:space-between}
+.hero-title{font-size:28px;margin:0 0 8px}
+.hero-sub{color:var(--muted);margin:0 0 12px}
+.hero-image img{width:160px;height:160px;border-radius:14px;object-fit:cover}
+
+.skills-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.skills-chip{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:999px;font-weight:600;color:var(--text)}
+
+.project-role{font-size:12px;color:var(--muted);margin-top:6px}
+.project-tech{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.tech-chip{background:var(--panel);padding:4px 8px;border-radius:8px;font-size:12px;color:var(--text)}
+
+.experience-list,.education-list{display:grid;gap:12px}
+.exp-card,.edu-card{background:var(--panel);padding:12px;border-radius:10px}
+
+.languages-list{display:flex;gap:12px;flex-wrap:wrap}
+.language-pill{background:var(--panel);padding:8px 10px;border-radius:10px}
+
+.contact-box{background:var(--panel);padding:10px;border-radius:10px}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 20px;
+    align-items: center
+}
+
+.profile-card {
+    background: var(--panel);
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px
+}
+
+.profile-pic {
+    width: 160px;
+    height: 160px;
+    border-radius: 14px
+}
+.cv-btn {
+    display: inline-block;
+    --btn-accent-start: color-mix(in srgb, var(--accent) 58%, black 42%);
+    --btn-accent-end: color-mix(in srgb, var(--accent) 36%, black 64%);
+    background: linear-gradient(270deg, var(--btn-accent-start), var(--btn-accent-end));
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
+}
+
+:root.light .cv-btn {
+    --btn-accent-start: color-mix(in srgb, var(--accent) 72%, white 28%);
+    --btn-accent-end: color-mix(in srgb, var(--accent) 40%, white 60%);
+    border-color: rgba(11, 18, 32, 0.06);
+}
+
+.cv-btn:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.6)
+}
+
+.cv-btn:active {
+    transform: translateY(-2px)
+}
+
+.cv-btn.active {
+    border: 1px solid var(--accent);
+    box-shadow: 0 10px 28px rgba(125, 211, 252, 0.07)
+}
+
+.about-text h2 {
+    margin-top: 0
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 12px
+}
+
+.project-card {
+    background: var(--panel);
+    padding: 14px;
+    border-radius: 10px
+}
+
+.project-card {
+    cursor: pointer;
+    transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease
+}
+
+.project-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(2, 6, 23, 0.6)
+}
+
+.project-card:active {
+    transform: translateY(-2px)
+}
+
+.project-card:focus {
+    outline: 2px solid rgba(125, 211, 252, 0.16);
+    box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.06)
+}
+
+.project-card.active {
+    border: 1px solid var(--accent);
+    box-shadow: 0 10px 28px rgba(125, 211, 252, 0.07)
+}
+
+.project-card.active {
+    cursor: default;
+}
+
+.project-card.active:hover {
+    transform: none;
+    box-shadow: 0 10px 28px rgba(125, 211, 252, 0.07)
+}
+
+.project-card .hint {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--muted)
+}
+
+.project-card:hover .hint {
+    color: var(--text)
+}
+
+.video-wrapper {
+    margin-top: 20px
+}
+
+.video-placeholder {
+    background: var(--panel);
+    padding: 12px;
+    border-radius: 10px
+}
+
+.video-placeholder iframe {
+    width: 100%;
+    height: 360px;
+    border-radius: 8px;
+    border: 0
+}
+
+.video-note {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 8px
+}
+
+/* Repos styles removed - no repo section present */
+
+footer {
+    padding: 28px 18px;
+    text-align: center;
+    color: var(--muted)
+}
+
+@media (max-width:760px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 12px
+    }
+
+    .profile-pic {
+        width: 120px;
+        height: 120px
+    }
+
+    .video-placeholder iframe {
+        height: 220px
+    }
+}
+
+.light body {
+    background: var(--bg)
+}

@@ -1,0 +1,173 @@
+{
+    "name": "{{full_name_from_external_file}}",
+    "subtitle": "Machine Learning • Computer Vision • Text-to-Speech",
+    "hero_title": "Buduję rozwiązania oparte na Machine Learning i generowaniu mowy",
+    "hero_subtitle": "Specjalizuję się w Computer Vision (YOLO detection & pose), systemach Text-to-Speech oraz modelach RVC. Tworzę narzędzia, eksperymenty i prototypy oparte na praktycznych zastosowaniach sztucznej inteligencji.",
+    "download_cv_text": "Pobierz CV",
+    "download_cv_links": {
+        "pl": "/files/cv_pl.pdf",
+        "en": "/files/cv_en.pdf"
+    },
+    "profile_photo": "/images/profile.jpg",
+    "about_title": "O mnie",
+    "about_text": "Jestem studentem na WZIM SGGW, specjalizacja: technologie chmurowe. Pracuję nad systemami generowania mowy i ich integracją z RVC (Retrieval-based Voice Conversion). Interesuję się ML — szczególnie Computer Vision (YOLO det, YOLO pose), audio processing i Text-to-Speech. Mam też doświadczenie w tworzeniu aplikacji webowych: frontend w Angularze oraz backend w Django. Hobbystycznie zajmuję się produkcją audio: nagrywam i miksuję ścieżki instrumentów oraz wokali w Reaperze, a następnie robię mastering. Korzystam z narzędzi takich jak UVR (Universal Vocal Removal) do separacji wokalu — często nagrywam amatorskie covery, aby ćwiczyć miks wokalu osoby niebędącej profesjonalnym solistą.",
+    "projects_title": "Projekty",
+    "projects": [
+        {
+            "project_id": "rvc_tts_integration",
+            "title": "Integracja AllTalk TTS z RVC",
+            "role": "ML Developer",
+            "short_description": "System łączący generowanie mowy (AllTalk TTS) z modelem RVC do konwersji głosu w czasie zbliżonym do rzeczywistego.",
+            "long_description": "Projekt obejmuje przygotowanie pełnego pipeline’u: generowanie mowy TTS, przetwarzanie audio, trenowanie i dostrajanie modeli RVC oraz integrację rozwiązania z interfejsem użytkownika. W projekcie wykorzystywane są narzędzia do analizy audio, a prezentacja działania systemu dostępna jest w formie wideo.",
+            "technologies": [
+                "Python",
+                "PyTorch",
+                "RVC",
+                "AllTalk TTS",
+                "Audio DSP",
+                "Reaper"
+            ],
+            "demo_link": "",
+            "repo_link": "",
+            "youtube_embed": "https://www.youtube.com/embed/{{id}}",
+            "image": "/images/rvc_tts.png"
+        },
+        {
+            "project_id": "tiktok_clip_generator",
+            "title": "Automatyczny generator klipów TikTok z długiej formy",
+            "role": "ML / Full-stack Developer",
+            "short_description": "Narzędzie analizujące długie nagrania, wykrywające ciekawsze fragmenty i generujące klipy dopasowane do formatu TikTok.",
+            "long_description": "System wykorzystuje transkrypcję przez LLM do detekcji interesujących momentów w długiej formie, automatycznie wycina fragmenty, dopasowuje je do odpowiedniego aspect ratio, dodaje napisy i tworzy gotowe klipy — idealne do publikacji na TikTok / mediach społecznościowych.",
+            "technologies": [
+                "Python",
+                "LLM",
+                "Video processing",
+                "FFmpeg",
+                "Frontend (Angular)",
+                "Backend (Django)"
+            ],
+            "demo_link": "",
+            "repo_link": "",
+            "image": "/images/tiktok_generator.png"
+        },
+        {
+            "project_id": "hearing_asymmetry_checker",
+            "title": "Aplikacja WPF do sprawdzania asymetrii słuchu",
+            "role": "Developer",
+            "short_description": "Narzędzie desktopowe pozwalające sprawdzić, które ucho lepiej słyszy daną częstotliwość.",
+            "long_description": "Aplikacja generuje sygnały o różnych częstotliwościach i umożliwia określenie różnicy czułości między lewym i prawym uchem. Powstała jako praktyczne narzędzie do wstępnej, niefachowej oceny asymetrii słuchu.",
+            "technologies": [
+                "C#",
+                "WPF",
+                "NAudio"
+            ],
+            "demo_link": "",
+            "repo_link": "",
+            "image": "/images/hearing_app.png"
+        },
+        {
+            "project_id": "small_scripts_collection",
+            "title": "Zbiór narzędzi i skryptów ML",
+            "role": "Developer",
+            "short_description": "Zestaw małych narzędzi i skryptów wspierających pracę z ML, CV i audio.",
+            "long_description": "Różne narzędzia do preprocessingu, testowania modeli, konwersji danych oraz analizy obrazów i dźwięku. Wiele z nich tworzonych było na potrzeby eksperymentów ML oraz pracy z audio (np. przygotowanie danych pod modele TTS lub RVC).",
+            "technologies": [
+                "Python",
+                "NumPy",
+                "OpenCV"
+            ],
+            "repo_link": "",
+            "image": "/images/scripts.png"
+        }
+    ],
+    "skills_title": "Umiejętności",
+    "skills": [
+        {
+            "name": "Machine Learning",
+            "level": "advanced"
+        },
+        {
+            "name": "Computer Vision (YOLO det & pose)",
+            "level": "advanced"
+        },
+        {
+            "name": "Text-to-Speech (AllTalk)",
+            "level": "intermediate"
+        },
+        {
+            "name": "RVC — Retrieval Voice Conversion",
+            "level": "intermediate"
+        },
+        {
+            "name": "Audio mixing & mastering (Reaper)",
+            "level": "intermediate"
+        },
+        {
+            "name": "Python",
+            "level": "advanced"
+        },
+        {
+            "name": "PyTorch",
+            "level": "intermediate"
+        },
+        {
+            "name": "Angular (frontend)",
+            "level": "intermediate"
+        },
+        {
+            "name": "Django (backend)",
+            "level": "intermediate"
+        },
+        {
+            "name": "C#",
+            "level": "intermediate"
+        },
+        {
+            "name": "Video processing & automation",
+            "level": "intermediate"
+        }
+    ],
+    "experience_title": "Doświadczenie",
+    "experience": [
+        {
+            "role": "Stażysta — Developer C#",
+            "company": "—",
+            "start_date": "",
+            "end_date": "",
+            "description": "W ramach stażu pracowałem nad aplikacją do edycji plików SVG wykorzystywanych do generowania etykiet EU Power Labels. Projekt umożliwiał dynamiczne umieszczanie kategorii energetycznych, automatyczne przesuwanie wskaźnika (strzałki), aktualizację wartości oraz dostosowanie wyglądu etykiety. Implementacja była oparta o C# oraz manipulację strukturą SVG."
+        }
+    ],
+    "education_title": "Edukacja",
+    "education": [
+        {
+            "school": "SGGW — WZIM",
+            "degree": "Informatyka, specjalizacja: technologie chmurowe",
+            "start_date": "",
+            "end_date": "",
+            "description": "Student"
+        }
+    ],
+    "languages_title": "Języki",
+    "languages": [
+        {
+            "language": "Polski",
+            "level": "native"
+        },
+        {
+            "language": "Angielski",
+            "level": "C1 (praktyczny, bez certyfikatu)"
+        }
+    ],
+    "contact": {
+        "contact_title": "Kontakt",
+        "email": "{{email_from_external_file}}",
+        "phone": "{{phone_from_external_file}}",
+        "location": "Polska",
+        "github_url": "https://github.com/twoj_github",
+        "website_url": "https://twojastrona.com"
+    },
+    "meta": {
+        "multilanguage": true,
+        "last_updated": "2025-11-26"
+    }
+}
