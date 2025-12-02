@@ -16,7 +16,20 @@
   "about_text": "I am a student at WZIM SGGW, majoring in Cloud Technologies. I work on speech generation systems and their integration with RVC (Retrieval-based Voice Conversion). My interests lie in practical ML applications — especially Computer Vision (YOLO detection, YOLO pose), audio processing and Text-to-Speech. I also have experience creating web applications: frontend with Angular and backend with Django. As a hobby, I produce and mix audio: I record and mix multi-instrument tracks and vocals in Reaper and perform mastering. I also use tools like UVR (Universal Vocal Removal) for voice separation — I often record amateur vocal covers to practice vocal mixing of non-professional voices.",
 
   "projects_title": "Projects",
+  "kronos_title": "Kronos — Live buses & trams delays",
+  "kronos_desc": "Live frontend demo of Kronos — shows stops, vehicles and live delays.",
   "projects": [
+    {
+      "project_id": "kronos_live",
+      "title": "Kronos — Live buses & trams delays",
+      "role": "Frontend (Angular)",
+      "short_description": "Live demo of bus & tram delays — a Kronos frontend showing stops, vehicles and live timetable delays.",
+      "long_description": "Kronos is a custom delay engine powering a live web frontend for public transport. This Angular frontend lists stops, shows upcoming vehicles for each stop, and displays a vehicle route along with live delays derived from official timetables and observed delay statistics. The backend engine (Django) is maintained separately.",
+      "technologies": ["Angular", "Typescript", "Django (backend)", "Realtime APIs"],
+      "demo_link": "https://kronos-live.pages.dev/",
+      "image": "/assets/kronos_preview.svg",
+      "videoId": "https://kronos-live.pages.dev/"
+    },
     {
       "project_id": "rvc_tts_integration",
       "title": "Integration of AllTalk TTS with RVC",
@@ -61,7 +74,9 @@
       "repo_link": "",
       "image": "/images/scripts.png"
     }
+    
   ],
+  "open_demo": "Open demo",
 
   "skills_title": "Skills",
   "skills": [

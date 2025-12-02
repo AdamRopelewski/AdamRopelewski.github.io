@@ -66,13 +66,19 @@ function buildProjectCard(p, idx) {
   card.setAttribute('role', 'button')
   card.setAttribute('tabindex', '0')
   // allow a number of video id sources: videoId, youtube_id, youtube_embed (template or url)
-  const videoId = p.videoId || p.youtube_id || p.youtubeId || ''
+  // support multiple source keys for site embeds or youtube ids
+  const videoId = p.videoId || p.video_id || p.youtube_id || p.youtubeId || p.video_url || p.embed || p.embed_url || ''
   card.setAttribute('data-video-id', videoId)
   if (p.youtube_embed && p.youtube_embed.includes('{{id}}') && p.youtube_id) {
     card.setAttribute('data-youtube', p.youtube_embed.replace('{{id}}', p.youtube_id))
   } else if (p.youtube_embed && !p.youtube_embed.includes('{{id}}')) {
     card.setAttribute('data-youtube', p.youtube_embed)
   }
+  // demo link / external site
+  if (p.demo_link) card.setAttribute('data-demo-link', p.demo_link)
+  else if (p.demoLink) card.setAttribute('data-demo-link', p.demoLink)
+  else if (p.link) card.setAttribute('data-demo-link', p.link)
+  else if (p.repo_link) card.setAttribute('data-demo-link', p.repo_link)
   card.setAttribute('data-project-id', p.id || `p${idx}`)
   // set accessible title and long desc data attributes for the video area
   const projectTitle = p.title || (p.titleKey ? strings[p.titleKey] : '')
@@ -111,6 +117,7 @@ function buildProjectCard(p, idx) {
     card.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.22)), url('${p.image}')`
     card.style.backgroundSize = 'cover'
     card.style.backgroundPosition = 'center'
+    card.setAttribute('data-image', p.image)
   }
   const titleTxt = title ? title.textContent : projectTitle || 'Project'
   card.setAttribute('aria-label', `${titleTxt}: ${strings['view_demo'] || 'Click to view demo'}`)
@@ -126,9 +133,134 @@ function renderProjects() {
   // attach click and keyboard handlers to project cards now that they are rendered
   const cards = Array.from(grid.querySelectorAll('.project-card'))
   cards.forEach(c => {
-    c.addEventListener('click', () => activateCard(c))
+    c.addEventListener('click', () => { console.debug('card click', c.getAttribute('data-project-id') || c.getAttribute('data-video-id')); activateCard(c) })
     c.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); activateCard(c) } })
   })
+
+  // event delegation fallback - if a nested element is clicked and the one we attached to isn't fired,
+  // ensure the click still activates the card by listening on the grid parent.
+  // avoid adding multiple duplicate listeners when renderProjects() is called repeatedly
+  if (!grid.dataset.delegated) {
+    grid.addEventListener('click', (ev) => {
+      const clickedCard = ev.target.closest && ev.target.closest('.project-card')
+      if (clickedCard) {
+        console.debug('grid delegated click ->', clickedCard.getAttribute('data-project-id')||clickedCard.getAttribute('data-video-id'))
+        activateCard(clickedCard)
+      }
+    })
+    grid.dataset.delegated = '1'
+  }
+  // select the first project card so showcase always has a visible project
+  if (cards.length) {
+    // select the first and set the video if available
+    selectProject(cards[0])
+    const firstVid = cards[0].getAttribute('data-video-id') || cards[0].getAttribute('data-youtube') || cards[0].getAttribute('data-demo-link')
+    if (firstVid) setVideo(firstVid, settings.defaultAutoplay)
+  }
+}
+
+// Helper to select project cards on the page
+const projectCards = () => Array.from(document.querySelectorAll('.project-card'))
+
+// Set the iframe to YouTube or arbitrary URL; also update active card state and selected info
+function setVideo(id, autoplay = false) {
+  const iframe = document.getElementById('ytFrame')
+  if (!id) { if (iframe) iframe.setAttribute('src', ''); return }
+  let url = id
+  if (!id.startsWith('http')) {
+    url = `https://www.youtube.com/embed/${id}?rel=0&autoplay=${autoplay ? 1 : 0}`
+  }
+  // ensure iframe is used, hide the image
+  const projectImg = document.getElementById('projectImg')
+  if (projectImg) { projectImg.setAttribute('src', ''); projectImg.classList.add('hidden') }
+  if (iframe) iframe.setAttribute('src', url)
+  projectCards().forEach(c => {
+    const isMatch = c.getAttribute('data-video-id') === id || c.getAttribute('data-demo-link') === id || c.getAttribute('data-youtube') === id
+    if (isMatch) {
+      c.classList.add('active')
+      c.setAttribute('aria-pressed', 'true')
+    } else {
+      c.classList.remove('active')
+      c.setAttribute('aria-pressed', 'false')
+    }
+  })
+  // update selected project title & description area
+  const selected = document.querySelector('.project-card.active')
+  if (selected) {
+    const selTitle = document.querySelector('.selected-project-title')
+    const selDesc = document.querySelector('.selected-project-desc')
+    const t = selected.getAttribute('data-title') || ''
+    const d = selected.getAttribute('data-long') || ''
+    if (selTitle) selTitle.textContent = t
+    if (selDesc) selDesc.textContent = d
+    // update the demo link (if present)
+    const demoLinkEl = document.getElementById('projectDemoLink')
+    if (demoLinkEl) {
+      const projectDemoUrl = selected.getAttribute('data-demo-link') || ''
+      if (projectDemoUrl) {
+        demoLinkEl.setAttribute('href', projectDemoUrl)
+        demoLinkEl.classList.remove('hidden')
+        demoLinkEl.textContent = strings['open_demo'] || strings['view_demo'] || 'Open demo'
+      } else {
+        demoLinkEl.setAttribute('href', '')
+        demoLinkEl.classList.add('hidden')
+        demoLinkEl.textContent = ''
+      }
+    }
+  }
+}
+
+// Activate the card and set the video or demo link as appropriate
+function activateCard(card) {
+  let vid = card.getAttribute('data-video-id')
+  if (!vid) vid = card.getAttribute('data-youtube') || ''
+  selectProject(card)
+  if (!vid) {
+    const demoUrl = card.getAttribute('data-demo-link') || ''
+    if (demoUrl) vid = demoUrl
+    else return setVideo('', false)
+  }
+  const autoplay = settings.defaultAutoplay || false
+  setVideo(vid, autoplay)
+}
+
+// Update the showcase for a selected project card (title/desc/cta/image)
+function selectProject(card) {
+  if (!card) return
+  projectCards().forEach(c => { c.classList.remove('active'); c.setAttribute('aria-pressed', 'false') })
+  card.classList.add('active'); card.setAttribute('aria-pressed', 'true')
+  const selTitle = document.querySelector('.selected-project-title')
+  const selDesc = document.querySelector('.selected-project-desc')
+  const t = card.getAttribute('data-title') || ''
+  const d = card.getAttribute('data-long') || ''
+  if (selTitle) selTitle.textContent = t
+  if (selDesc) selDesc.textContent = d
+  const demoLinkEl = document.getElementById('projectDemoLink')
+  if (demoLinkEl) {
+    const projectDemoUrl = card.getAttribute('data-demo-link') || ''
+    if (projectDemoUrl) {
+      demoLinkEl.setAttribute('href', projectDemoUrl)
+      demoLinkEl.classList.remove('hidden')
+      demoLinkEl.textContent = strings['open_demo'] || strings['view_demo'] || 'Open demo'
+    } else {
+      demoLinkEl.setAttribute('href', '')
+      demoLinkEl.classList.add('hidden')
+      demoLinkEl.textContent = ''
+    }
+  }
+  const iframeEl = document.getElementById('ytFrame')
+  const projectImg = document.getElementById('projectImg')
+  const imgSrc = card.getAttribute('data-image') || ''
+  const vid = card.getAttribute('data-video-id') || card.getAttribute('data-youtube') || card.getAttribute('data-demo-link') || ''
+  if (!vid && imgSrc) {
+    if (iframeEl) iframeEl.setAttribute('src', '')
+    if (projectImg) {
+      projectImg.setAttribute('src', imgSrc)
+      projectImg.classList.remove('hidden')
+    }
+  } else {
+    if (projectImg) { projectImg.setAttribute('src', ''); projectImg.classList.add('hidden') }
+  }
 }
 
 function replacePlaceholders(obj, profile) {
@@ -293,50 +425,7 @@ async function init() {
   }
 
 
-  // set event handlers for cards are added in renderProjects() for each card
-  const iframe = document.getElementById('ytFrame')
-
-  const projectCards = () => Array.from(document.querySelectorAll('.project-card'))
-  function setVideo(id, autoplay = false) {
-    if (!id) { iframe.setAttribute('src', ''); return }
-    // id may be a full URL or a raw id
-    let url = id
-    if (!id.startsWith('http')) {
-      url = `https://www.youtube.com/embed/${id}?rel=0&autoplay=${autoplay ? 1 : 0}`
-    }
-    iframe.setAttribute('src', url)
-    projectCards().forEach(c => {
-      if (c.getAttribute('data-video-id') === id) {
-        c.classList.add('active');
-        c.setAttribute('aria-pressed', 'true')
-      } else {
-        c.classList.remove('active');
-        c.setAttribute('aria-pressed', 'false')
-      }
-    })
-    // update selected project title & description area
-    const selected = document.querySelector('.project-card.active')
-    if (selected) {
-      const selTitle = document.querySelector('.selected-project-title')
-      const selDesc = document.querySelector('.selected-project-desc')
-      const t = selected.getAttribute('data-title') || ''
-      const d = selected.getAttribute('data-long') || ''
-      if (selTitle) selTitle.textContent = t
-      if (selDesc) selDesc.textContent = d
-    }
-  }
-
-  function activateCard(card) {
-    let vid = card.getAttribute('data-video-id')
-    // try to read a youtube id from dataset or from project structure in case we're using content projects
-    if (!vid) {
-      // try to find an injected property from content data: data-youtube
-      vid = card.getAttribute('data-youtube') || ''
-    }
-    if (!vid) return setVideo('', false)
-    const autoplay = settings.defaultAutoplay || false
-    setVideo(vid, autoplay)
-  }
+  
 
   // helper to update project node text and aria on language change
   function updateProjectLabels() {
@@ -351,6 +440,11 @@ async function init() {
       const titleTxt = titleEl ? titleEl.textContent : 'Project'
       card.setAttribute('aria-label', `${titleTxt}: ${strings['view_demo'] || 'Click to view demo'}`)
     })
+    // update demo link text if visible
+    const demoLinkEl = document.getElementById('projectDemoLink')
+    if (demoLinkEl) {
+      demoLinkEl.textContent = strings['open_demo'] || strings['view_demo'] || 'Open demo'
+    }
   }
 
   // Render dynamic sections based on loaded content strings and profile
@@ -422,9 +516,11 @@ async function init() {
   // renderRepos removed: Repositories are not displayed as a separate section. We keep the GitHub link in profile/contact
 
   // default to first project
+  // default to first project (if renderProjects didn't set it already)
   const firstCard = document.querySelector('.project-card')
-  if (firstCard) {
-    const firstVid = firstCard.getAttribute('data-video-id') || firstCard.getAttribute('data-youtube')
+  if (firstCard && !document.querySelector('.project-card.active')) {
+    selectProject(firstCard)
+    const firstVid = firstCard.getAttribute('data-video-id') || firstCard.getAttribute('data-youtube') || firstCard.getAttribute('data-demo-link')
     if (firstVid) setVideo(firstVid, settings.defaultAutoplay)
   }
 

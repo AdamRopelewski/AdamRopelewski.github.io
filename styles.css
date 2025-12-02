@@ -332,6 +332,7 @@ main {
     cursor: pointer;
     transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease
 }
+.project-card, .project-card * { pointer-events: auto }
 
 .project-card:hover {
     transform: translateY(-6px);
@@ -357,8 +358,8 @@ main {
 }
 
 .project-card.active:hover {
-    transform: none;
-    box-shadow: 0 10px 28px rgba(125, 211, 252, 0.07)
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(125, 211, 252, 0.07)
 }
 
 .project-card .hint {
@@ -389,11 +390,32 @@ main {
     border: 0
 }
 
+.video-placeholder img {
+    width: 100%;
+    height: 360px;
+    border-radius: 8px;
+    object-fit: contain;
+    display: block;
+}
+.video-placeholder img.hidden { display: none }
+
 .video-note {
     color: var(--muted);
     font-size: 13px;
     margin-top: 8px
 }
+
+.video-cta { margin-top: 10px }
+.selected-project-cta {
+    display: inline-block;
+    padding: 8px 12px;
+    background: linear-gradient(270deg, var(--accent), #6ee7b7);
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+}
+.selected-project-cta.hidden { display: none }
 
 /* Repos styles removed - no repo section present */
 

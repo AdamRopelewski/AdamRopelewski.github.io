@@ -1,0 +1,5 @@
+- [] videos per project
+- [] images
+- [x] loading animation 
+- [ ] better about me section
+- [ ] add a flag next to lang change

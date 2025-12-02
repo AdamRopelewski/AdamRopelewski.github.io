@@ -1,5 +1,12 @@
 [
   {
+    "id": "kronos_live",
+    "videoId": "https://kronos-live.pages.dev/",
+    "titleKey": "kronos_title",
+    "descKey": "kronos_desc"
+    ,"demo_link": "https://kronos-live.pages.dev/"
+  },
+  {
     "id": "proj1",
     "videoId": "dQw4w9WgXcQ",
     "titleKey": "proj1_title",

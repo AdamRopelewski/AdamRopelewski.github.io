@@ -12,7 +12,20 @@
     "about_title": "O mnie",
     "about_text": "Jestem studentem na WZIM SGGW, specjalizacja: technologie chmurowe. Pracuję nad systemami generowania mowy i ich integracją z RVC (Retrieval-based Voice Conversion). Interesuję się ML — szczególnie Computer Vision (YOLO det, YOLO pose), audio processing i Text-to-Speech. Mam też doświadczenie w tworzeniu aplikacji webowych: frontend w Angularze oraz backend w Django. Hobbystycznie zajmuję się produkcją audio: nagrywam i miksuję ścieżki instrumentów oraz wokali w Reaperze, a następnie robię mastering. Korzystam z narzędzi takich jak UVR (Universal Vocal Removal) do separacji wokalu — często nagrywam amatorskie covery, aby ćwiczyć miks wokalu osoby niebędącej profesjonalnym solistą.",
     "projects_title": "Projekty",
+    "kronos_title": "Kronos — live opóźnienia autobusów i tramwajów",
+    "kronos_desc": "Frontend aplikacji Kronos pokazujący przystanki, pojazdy i opóźnienia na żywo.",
     "projects": [
+        {
+            "project_id": "kronos_live",
+            "title": "Kronos — demo opóźnień autobusów i tramwajów",
+            "role": "Frontend (Angular)",
+            "short_description": "Live demo: opóźnienia autobusów i tramwajów — interfejs pokazujący przystanki, pojazdy i rozkład jazdy z opóźnieniami.",
+            "long_description": "Kronos to niestandardowy silnik opóźnień, który napędza frontend do prezentowania danych transportowych. Frontend (Angular) pokazuje listę przystanków, nadchodzące pojazdy na przystanku oraz trasę pojazdu z aktualnymi opóźnieniami, zliczonymi statystycznie na podstawie oficjalnych rozkładów jazdy i obserwowanych opóźnień. Backend Django jest utrzymywany osobno.",
+            "technologies": ["Angular", "Typescript", "Django (backend)", "Realtime APIs"],
+            "demo_link": "https://kronos-live.pages.dev/",
+            "image": "/assets/kronos_preview.svg",
+            "videoId": "https://kronos-live.pages.dev/"
+        },
         {
             "project_id": "rvc_tts_integration",
             "title": "Integracja AllTalk TTS z RVC",
@@ -79,7 +92,9 @@
             "repo_link": "",
             "image": "/images/scripts.png"
         }
+            
     ],
+    "open_demo": "Otwórz demo",
     "skills_title": "Umiejętności",
     "skills": [
         {
