@@ -1,14 +1,3 @@
-/*
-  App loader that fetches settings, localized content, and projects.
-  - settings.json (defaultLanguage, defaultTheme, defaultAutoplay)
-  - content/<lang>.json for localized strings; fallback to content/template.json
-  - projects.json with array of projects: {id, videoId, titleKey, descKey}
-
-  The script will dynamically render the project cards and wire up
-  event handlers for language/theme toggles and video swaps.
-*/
-
-// helper to fetch and parse JSON with fallback
 async function loadJson(path) {
   try {
     const res = await fetch(path, { cache: 'no-cache' })
@@ -28,8 +17,6 @@ let strings = {}
 let profile = {}
 let projects = []
 // Add a small whitelist for external hosts which we will allow to embed in the iframe.
-// This keeps us safe from inadvertently embedding arbitrary sites but restores legacy
-// behavior for trusted demo hosts like kronos-live.pages.dev.
 const ALLOWED_EMBED_HOSTS = new Set([
   'kronos-live.pages.dev'
 ])
@@ -413,6 +400,64 @@ function replacePlaceholders(obj, profile) {
   return obj
 }
 
+// Helpers to set CV href and ensure a sensible filename with a .pdf extension
+function safeFileNameFromUrl(href) {
+  if (!href) return 'cv.pdf'
+  try {
+    const u = new URL(href, window.location.href)
+    let name = (u.pathname || '').split('/').filter(Boolean).pop() || ''
+    if (!name) name = 'cv.pdf'
+    if (!name.toLowerCase().endsWith('.pdf')) name = `${name}.pdf`
+    return name
+  } catch (err) {
+    // fallback: try to parse simple strings
+    const parts = href.split('/')
+    let name = parts[parts.length - 1] || 'cv.pdf'
+    if (!name.toLowerCase().endsWith('.pdf')) name = `${name}.pdf`
+    return name
+  }
+}
+
+function setCvLink(href) {
+  const el = document.getElementById('cvDownload')
+  if (!el || !href) return
+  el.setAttribute('href', href)
+  // set the download attribute with a sensible filename
+  el.setAttribute('download', safeFileNameFromUrl(href))
+  // set MIME type hint (helps some browsers)
+  try { el.setAttribute('type', 'application/pdf') } catch (err) {}
+}
+
+// Trigger a download for a given href; if the href is cross-origin, attempt to fetch the file
+// and create a blob link to force the browser to save it with a filename.
+async function triggerDownloadForHref(href) {
+  if (!href) return
+  try {
+    const u = new URL(href, window.location.href)
+    if (u.origin !== window.location.origin) {
+      // cross-origin: use fetch to get blob and force download
+      const resp = await fetch(href, { cache: 'no-cache', mode: 'cors' })
+      if (!resp.ok) throw new Error('HTTP ' + resp.status)
+      const blob = await resp.blob()
+      const blobUrl = URL.createObjectURL(blob)
+      const temp = document.createElement('a')
+      temp.href = blobUrl
+      temp.setAttribute('download', safeFileNameFromUrl(href))
+      document.body.appendChild(temp)
+      temp.click()
+      document.body.removeChild(temp)
+      URL.revokeObjectURL(blobUrl)
+    } else {
+      // same-origin: let the browser handle download (preserves default behavior)
+      window.location.href = href
+    }
+  } catch (err) {
+    // fallback: open in new tab so user can still access the file
+    console.debug('triggerDownloadForHref error, falling back to open:', err)
+    window.open(href, '_blank')
+  }
+}
+
 async function loadSettingsAndContent() {
   const s = await loadJson('settings.json')
   settings = { ...DEFAULT_SETTINGS, ...(s || {}) }
@@ -435,9 +480,9 @@ async function loadSettingsAndContent() {
   if (profile.fullName) { document.title = `${profile.fullName} — Portfolio` }
 
   // set CV link if content doesn't provide a language-specific link
-  const cvEl = document.querySelectorAll('.cta-btn')
-  if (!strings.download_cv_links && profile.cvFile) {
-    cvEl.forEach(el => el.setAttribute('href', profile.cvFile))
+  const cvEl = document.getElementById('cvDownload')
+  if (!strings.download_cv_links && profile.cvFile && cvEl) {
+    setCvLink(profile.cvFile)
   }
 
   // set alt text for logo and profile pic
@@ -627,7 +672,7 @@ async function init() {
     const heroTitle = document.querySelector('.hero-title')
     const heroSub = document.querySelector('.hero-sub')
     const profilePic = document.querySelector('.profile-card .profile-pic')
-    const cta = document.querySelector('.hero-cta .cta-btn')
+    const cta = document.getElementById('cvDownload')
     if (strings.hero_title) heroTitle.textContent = strings.hero_title
     if (strings.hero_subtitle) heroSub.textContent = strings.hero_subtitle
     // set profile image in profile card (prefer content, otherwise use profile.json or fallback)
@@ -641,9 +686,9 @@ async function init() {
     // prefer content-provided CV links; otherwise fallback to profile.cvFile
     const lang = localStorage.getItem('lang') || settings.defaultLanguage
     if (strings.download_cv_links && strings.download_cv_links[lang]) {
-      cta.setAttribute('href', strings.download_cv_links[lang])
+      setCvLink(strings.download_cv_links[lang])
     } else if (profile && profile.cvFile) {
-      cta.setAttribute('href', profile.cvFile)
+      setCvLink(profile.cvFile)
     }
   }
 
@@ -699,8 +744,8 @@ async function init() {
     if (firstVid) setVideo(firstVid, settings.defaultAutoplay)
   }
 
-  // CV button animation: add 'active' class briefly on click (or keyboard activation)
-  const ctaButton = document.querySelector('.cta-btn')
+  // CV button animation and download behavior: target the specific CV anchor
+  const ctaButton = document.getElementById('cvDownload')
   if (ctaButton) {
     const animate = (e) => {
       // add active state
@@ -708,13 +753,26 @@ async function init() {
       // remove the active state after a short interval
       setTimeout(() => ctaButton.classList.remove('active'), 550)
     }
-    ctaButton.addEventListener('click', animate)
+    ctaButton.addEventListener('click', async (e) => {
+      animate()
+      try {
+        const href = ctaButton.getAttribute('href')
+        if (!href) return
+        const u = new URL(href, window.location.href)
+        if (u.origin !== window.location.origin) {
+          e.preventDefault()
+          await triggerDownloadForHref(href)
+        }
+      } catch (err) {
+        // if URL parsing fails, do nothing and let default behavior happen
+      }
+    })
     ctaButton.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
         e.preventDefault()
         animate()
-        // allow default anchor behavior to continue after animation
-        setTimeout(() => { window.location.href = ctaButton.getAttribute('href') }, 120)
+        // use our helper to trigger download with proper filename handling
+        setTimeout(() => { triggerDownloadForHref(ctaButton.getAttribute('href')) }, 120)
       }
     })
   }

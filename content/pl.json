@@ -5,10 +5,9 @@
     "hero_subtitle": "Specjalizuję się w Computer Vision (YOLO detection & pose), systemach Text-to-Speech oraz modelach RVC. Tworzę narzędzia, modele oparte na praktycznych zastosowaniach sztucznej inteligencji.",
     "download_cv_text": "Pobierz CV",
     "download_cv_links": {
-        "pl": "/files/cv_pl.pdf",
-        "en": "/files/cv_en.pdf"
+        "pl": "/files/Adam_Ropelewski_CV_PL.pdf"
     },
-    "profile_photo": "/images/profile.jpg",
+    "profile_photo": "/assets/profile.jpg",
     "about_title": "O mnie",
     "about_text": "Jestem studentem SGGW na wydziale Zastosowań Matematyki i Informatyki, specjalizacja: technologie chmurowe. Pracuję nad systemami generowania mowy oraz ich integracją z RVC (Retrieval-based Voice Conversion) w ramach pracy inżynierskiej. Interesuję się ML — szczególnie Computer Vision (YOLO det, YOLO pose), audio processing i Text-to-Speech. Mam też doświadczenie w tworzeniu aplikacji webowych. Hobbystycznie zajmuję się produkcją audio: nagrywam i miksuję ścieżki w DEW Reaper, robię rówież mastering. Korzystam z narzędzi takich jak UVR (Universal Vocal Removal) do separacji wokalu — często nagrywam amatorskie covery, aby ćwiczyć miks wokalu osoby niebędącej profesjonalnym solistą.",
     "projects_title": "Projekty",
@@ -29,9 +28,9 @@
                 "Websockets",
                 "Leaflet.js"
             ],
-            "demo_link": "https://kronos-live.pages.dev/",
-            "image": "/assets/kronos_preview.svg",
-            "videoId": "https://kronos-live.pages.dev/"
+            "demo_link": "https://kronos-live.pages.dev/"
+            ,
+            "image": "/assets/kronos_preview.svg"
         },
         {
             "project_id": "rvc_tts_integration",
@@ -49,7 +48,7 @@
             ],
             "demo_link": "",
             "repo_link": "",
-            "youtube_embed": "https://www.youtube.com/embed/{{id}}",
+            "youtube_embed": "https://www.youtube.com/embed/vZupIBqKHqM",
             "image": "/images/rvc_tts.png"
         },
         {
@@ -64,10 +63,10 @@
                 "Video processing",
                 "FFmpeg",
                 "Ollama"
-
             ],
             "demo_link": "",
             "repo_link": "",
+            "youtube_embed": "https://www.youtube.com/embed/123123",
             "image": "/images/tiktok_generator.png"
         },
         {
@@ -83,6 +82,7 @@
             ],
             "demo_link": "",
             "repo_link": "",
+            "youtube_embed": "https://www.youtube.com/embed/34",
             "image": "/images/hearing_app.png"
         }
     ],

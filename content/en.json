@@ -5,10 +5,9 @@
     "hero_subtitle": "I specialize in Computer Vision (YOLO detection & pose), Text-to-Speech systems, and RVC models. I create tools and models focused on practical applications of artificial intelligence.",
     "download_cv_text": "Download CV",
     "download_cv_links": {
-        "pl": "/files/cv_pl.pdf",
-        "en": "/files/cv_en.pdf"
+        "en": "/files/Adam_Ropelewski_CV_EN.pdf"
     },
-    "profile_photo": "/images/profile.jpg",
+    "profile_photo": "/assets/profile.jpg",
     "about_title": "About me",
     "about_text": "I am a student at SGGW, Faculty of Applied Mathematics and Computer Science, specializing in cloud technologies. I am working on speech generation systems and their integration with RVC (Retrieval-based Voice Conversion) as part of my engineering thesis. I am interested in ML — especially Computer Vision (YOLO det, YOLO pose), audio processing, and Text-to-Speech. I also have experience developing web applications. As a hobby, I work with audio production: I record and mix tracks in Reaper DAW, and I also do mastering. I use tools like UVR (Universal Vocal Removal) for vocal separation — I often record amateur covers to practice mixing vocals for non-professional singers.",
     "projects_title": "Projects",
@@ -29,9 +28,9 @@
                 "Websockets",
                 "Leaflet.js"
             ],
-            "demo_link": "https://kronos-live.pages.dev/",
-            "image": "/assets/kronos_preview.svg",
-            "videoId": "https://kronos-live.pages.dev/"
+            "demo_link": "https://kronos-live.pages.dev/"
+            ,
+            "image": "/assets/kronos_preview.svg"
         },
         {
             "project_id": "rvc_tts_integration",
@@ -49,7 +48,7 @@
             ],
             "demo_link": "",
             "repo_link": "",
-            "youtube_embed": "https://www.youtube.com/embed/{{id}}",
+            "youtube_embed": "https://www.youtube.com/embed/vZupIBqKHqM",
             "image": "/images/rvc_tts.png"
         },
         {
@@ -67,6 +66,7 @@
             ],
             "demo_link": "",
             "repo_link": "",
+            "youtube_embed": "https://www.youtube.com/embed/123123",
             "image": "/images/tiktok_generator.png"
         },
         {
@@ -82,6 +82,7 @@
             ],
             "demo_link": "",
             "repo_link": "",
+            "youtube_embed": "https://www.youtube.com/embed/34",
             "image": "/images/hearing_app.png"
         }
     ],
