@@ -27,6 +27,12 @@ let settings = { ...DEFAULT_SETTINGS }
 let strings = {}
 let profile = {}
 let projects = []
+// Add a small whitelist for external hosts which we will allow to embed in the iframe.
+// This keeps us safe from inadvertently embedding arbitrary sites but restores legacy
+// behavior for trusted demo hosts like kronos-live.pages.dev.
+const ALLOWED_EMBED_HOSTS = new Set([
+  'kronos-live.pages.dev'
+])
 
 function applyTheme(theme) {
   const html = document.documentElement
@@ -94,10 +100,7 @@ function buildProjectCard(p, idx) {
   if (p.descKey) { desc.setAttribute('data-i18n', p.descKey); desc.textContent = strings[p.descKey] || p.descKey || '' }
   else { desc.textContent = p.short_description || p.descKey || '' }
 
-  const hint = document.createElement('span')
-  hint.className = 'hint'
-  hint.setAttribute('data-i18n', 'view_demo')
-  hint.textContent = strings['view_demo'] || 'Click to view demo'
+  // NOTE: No 'view_demo' hint shown on project tiles per UI update
 
   card.appendChild(title)
   card.appendChild(desc)
@@ -111,7 +114,7 @@ function buildProjectCard(p, idx) {
     p.technologies.forEach(t => { const el = document.createElement('span'); el.className = 'tech-chip'; el.textContent = t; techList.appendChild(el) })
     card.appendChild(techList)
   }
-  card.appendChild(hint)
+  // hint element removed — do not append
   // set thumbnail if available
   if (p.image) {
     card.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.22)), url('${p.image}')`
@@ -120,7 +123,7 @@ function buildProjectCard(p, idx) {
     card.setAttribute('data-image', p.image)
   }
   const titleTxt = title ? title.textContent : projectTitle || 'Project'
-  card.setAttribute('aria-label', `${titleTxt}: ${strings['view_demo'] || 'Click to view demo'}`)
+  card.setAttribute('aria-label', titleTxt)
   return card
 }
 
@@ -153,7 +156,7 @@ function renderProjects() {
   // select the first project card so showcase always has a visible project
   if (cards.length) {
     // select the first and set the video if available
-    selectProject(cards[0])
+    selectProject(cards[0], false)
     const firstVid = cards[0].getAttribute('data-video-id') || cards[0].getAttribute('data-youtube') || cards[0].getAttribute('data-demo-link')
     if (firstVid) setVideo(firstVid, settings.defaultAutoplay)
   }
@@ -167,13 +170,39 @@ function setVideo(id, autoplay = false) {
   const iframe = document.getElementById('ytFrame')
   if (!id) { if (iframe) iframe.setAttribute('src', ''); return }
   let url = id
+  // Determine whether we should embed this id/url in an iframe or treat it as external
+  let useIframe = true
   if (!id.startsWith('http')) {
     url = `https://www.youtube.com/embed/${id}?rel=0&autoplay=${autoplay ? 1 : 0}`
+    useIframe = true
+  } else {
+    // parse URL and detect known embeddable hosts (youtube/vimeo). If not, we'll not embed external site.
+    try {
+      const u = new URL(id)
+      const host = (u.hostname || '').toLowerCase()
+      if (host.includes('youtube.com') || host.includes('youtu.be') || host.includes('vimeo.com') || host.includes('player.vimeo.com') || ALLOWED_EMBED_HOSTS.has(host)) {
+        useIframe = true
+      } else {
+        useIframe = false
+      }
+    } catch (err) {
+      useIframe = false
+    }
   }
-  // ensure iframe is used, hide the image
+  // ensure iframe is used for embeddable hosts; otherwise, clear it and show the project's image if present
   const projectImg = document.getElementById('projectImg')
-  if (projectImg) { projectImg.setAttribute('src', ''); projectImg.classList.add('hidden') }
-  if (iframe) iframe.setAttribute('src', url)
+  if (!useIframe) {
+    if (iframe) iframe.setAttribute('src', '')
+    if (projectImg) {
+      // show placeholder image for the currently selected card
+      const selected = document.querySelector('.project-card.active')
+      const imgSrc = selected && selected.getAttribute('data-image')
+      if (imgSrc) { projectImg.setAttribute('src', imgSrc); projectImg.classList.remove('hidden') } else { projectImg.classList.add('hidden') }
+    }
+  } else {
+    if (projectImg) { projectImg.setAttribute('src', ''); projectImg.classList.add('hidden') }
+    if (iframe) iframe.setAttribute('src', url)
+  }
   projectCards().forEach(c => {
     const isMatch = c.getAttribute('data-video-id') === id || c.getAttribute('data-demo-link') === id || c.getAttribute('data-youtube') === id
     if (isMatch) {
@@ -210,11 +239,24 @@ function setVideo(id, autoplay = false) {
   }
 }
 
+// human-friendly label for external demo links
+function friendlyLabelForUrl(url) {
+  if (!url) return ''
+  try {
+    const u = new URL(url)
+    return (u.hostname || url).replace(/^www\./, '')
+  } catch (err) {
+    // not a full URL; fallback to the raw string
+    return url
+  }
+}
+
 // Activate the card and set the video or demo link as appropriate
 function activateCard(card) {
   let vid = card.getAttribute('data-video-id')
   if (!vid) vid = card.getAttribute('data-youtube') || ''
-  selectProject(card)
+  // When the user interacts with the project (click/keyboard), scroll the showcase
+  selectProject(card, true)
   if (!vid) {
     const demoUrl = card.getAttribute('data-demo-link') || ''
     if (demoUrl) vid = demoUrl
@@ -225,8 +267,11 @@ function activateCard(card) {
 }
 
 // Update the showcase for a selected project card (title/desc/cta/image)
-function selectProject(card) {
+function selectProject(card, scroll = false) {
   if (!card) return
+  // optional scroll parameter: second argument can be a boolean 'scroll'. Default to false to avoid
+  // scrolling when projects are programmatically (re)rendered or when language changes.
+  // parameter 'scroll' (boolean) indicates whether to scroll the showcase into view
   projectCards().forEach(c => { c.classList.remove('active'); c.setAttribute('aria-pressed', 'false') })
   card.classList.add('active'); card.setAttribute('aria-pressed', 'true')
   const selTitle = document.querySelector('.selected-project-title')
@@ -241,7 +286,11 @@ function selectProject(card) {
     if (projectDemoUrl) {
       demoLinkEl.setAttribute('href', projectDemoUrl)
       demoLinkEl.classList.remove('hidden')
-      demoLinkEl.textContent = strings['open_demo'] || strings['view_demo'] || 'Open demo'
+      // If demo is an external url, show its hostname (e.g. kronos-live.pages.dev)
+      // This makes it explicit that clicking will open an external page
+      const friendly = friendlyLabelForUrl(projectDemoUrl)
+      // prefer to show just the hostname, otherwise fallback to the i18n label
+      demoLinkEl.textContent = friendly || strings['open_demo'] || strings['view_demo'] || 'Open demo'
     } else {
       demoLinkEl.setAttribute('href', '')
       demoLinkEl.classList.add('hidden')
@@ -260,6 +309,16 @@ function selectProject(card) {
     }
   } else {
     if (projectImg) { projectImg.setAttribute('src', ''); projectImg.classList.add('hidden') }
+  }
+  // Scroll and focus only when explicitly requested (e.g., user click/keyboard interaction)
+  if (scroll) {
+    const showcase = document.querySelector('.video-wrapper')
+    if (showcase) {
+      try { showcase.scrollIntoView({ behavior: 'smooth', block: 'start' }) } catch (err) { showcase.scrollIntoView() }
+      // for accessibility focus on the main element inside the showcase
+      const focusable = document.getElementById('projectDemoLink') || document.getElementById('ytFrame')
+      if (focusable) focusable.focus({ preventScroll: true })
+    }
   }
 }
 
@@ -436,14 +495,18 @@ async function init() {
       const descKey = descEl && descEl.getAttribute('data-i18n')
       if (titleKey) titleEl.textContent = strings[titleKey] || titleKey
       if (descKey) descEl.textContent = strings[descKey] || descKey
-      card.querySelector('.hint').textContent = strings['view_demo'] || 'Click to view demo'
+      // 'view_demo' hint removed from project tiles — no hint text to update
       const titleTxt = titleEl ? titleEl.textContent : 'Project'
-      card.setAttribute('aria-label', `${titleTxt}: ${strings['view_demo'] || 'Click to view demo'}`)
+      card.setAttribute('aria-label', titleTxt)
     })
     // update demo link text if visible
     const demoLinkEl = document.getElementById('projectDemoLink')
     if (demoLinkEl) {
-      demoLinkEl.textContent = strings['open_demo'] || strings['view_demo'] || 'Open demo'
+        // If the currently selected project points to an external URL, prefer showing hostname
+        const active = document.querySelector('.project-card.active')
+        const activeDemo = active && active.getAttribute('data-demo-link')
+        if (activeDemo) demoLinkEl.textContent = friendlyLabelForUrl(activeDemo) || strings['open_demo'] || strings['view_demo'] || 'Open demo'
+        else demoLinkEl.textContent = strings['open_demo'] || strings['view_demo'] || 'Open demo'
     }
   }
 
@@ -519,7 +582,7 @@ async function init() {
   // default to first project (if renderProjects didn't set it already)
   const firstCard = document.querySelector('.project-card')
   if (firstCard && !document.querySelector('.project-card.active')) {
-    selectProject(firstCard)
+    selectProject(firstCard, false)
     const firstVid = firstCard.getAttribute('data-video-id') || firstCard.getAttribute('data-youtube') || firstCard.getAttribute('data-demo-link')
     if (firstVid) setVideo(firstVid, settings.defaultAutoplay)
   }

@@ -1,137 +1,190 @@
 {
-  "name": "{{full_name_from_external_file}}",
-  "subtitle": "Machine Learning • Computer Vision • Text-to-Speech",
-  "hero_title": "I build solutions powered by Machine Learning and speech generation",
-  "hero_subtitle": "I specialize in Computer Vision (YOLO detection & pose), Text-to-Speech systems and RVC models. I build tools, experiments and prototypes focused on practical ML applications.",
-
-  "download_cv_text": "Download CV",
-  "download_cv_links": {
-    "pl": "/files/cv_pl.pdf",
-    "en": "/files/cv_en.pdf"
-  },
-
-  "profile_photo": "/images/profile.jpg",
-
-  "about_title": "About Me",
-  "about_text": "I am a student at WZIM SGGW, majoring in Cloud Technologies. I work on speech generation systems and their integration with RVC (Retrieval-based Voice Conversion). My interests lie in practical ML applications — especially Computer Vision (YOLO detection, YOLO pose), audio processing and Text-to-Speech. I also have experience creating web applications: frontend with Angular and backend with Django. As a hobby, I produce and mix audio: I record and mix multi-instrument tracks and vocals in Reaper and perform mastering. I also use tools like UVR (Universal Vocal Removal) for voice separation — I often record amateur vocal covers to practice vocal mixing of non-professional voices.",
-
-  "projects_title": "Projects",
-  "kronos_title": "Kronos — Live buses & trams delays",
-  "kronos_desc": "Live frontend demo of Kronos — shows stops, vehicles and live delays.",
-  "projects": [
-    {
-      "project_id": "kronos_live",
-      "title": "Kronos — Live buses & trams delays",
-      "role": "Frontend (Angular)",
-      "short_description": "Live demo of bus & tram delays — a Kronos frontend showing stops, vehicles and live timetable delays.",
-      "long_description": "Kronos is a custom delay engine powering a live web frontend for public transport. This Angular frontend lists stops, shows upcoming vehicles for each stop, and displays a vehicle route along with live delays derived from official timetables and observed delay statistics. The backend engine (Django) is maintained separately.",
-      "technologies": ["Angular", "Typescript", "Django (backend)", "Realtime APIs"],
-      "demo_link": "https://kronos-live.pages.dev/",
-      "image": "/assets/kronos_preview.svg",
-      "videoId": "https://kronos-live.pages.dev/"
+    "name": "{{full_name_from_external_file}}",
+    "subtitle": "Computer Vision • Text-to-Speech • Angular • WMF",
+    "hero_title": "I build Machine Learning–based solutions, specializing in Computer Vision and Text-to-Speech.",
+    "hero_subtitle": "I specialize in Computer Vision (YOLO detection & pose), Text-to-Speech systems, and RVC models. I create tools and models focused on practical applications of artificial intelligence.",
+    "download_cv_text": "Download CV",
+    "download_cv_links": {
+        "pl": "/files/cv_pl.pdf",
+        "en": "/files/cv_en.pdf"
     },
-    {
-      "project_id": "rvc_tts_integration",
-      "title": "Integration of AllTalk TTS with RVC",
-      "role": "ML Developer",
-      "short_description": "A system combining speech generation (AllTalk TTS) with RVC voice conversion in near real-time.",
-      "long_description": "The project includes a full processing pipeline: TTS generation, audio preprocessing, training and fine-tuning RVC models, and integration with a user interface. It uses audio analysis tools, and includes a video demonstration.",
-      "technologies": ["Python", "PyTorch", "RVC", "AllTalk TTS", "Audio DSP", "Reaper"],
-      "demo_link": "",
-      "repo_link": "",
-      "youtube_embed": "https://www.youtube.com/embed/{{id}}",
-      "image": "/images/rvc_tts.png"
+    "profile_photo": "/images/profile.jpg",
+    "about_title": "About me",
+    "about_text": "I am a student at SGGW, Faculty of Applied Mathematics and Computer Science, specializing in cloud technologies. I am working on speech generation systems and their integration with RVC (Retrieval-based Voice Conversion) as part of my engineering thesis. I am interested in ML — especially Computer Vision (YOLO det, YOLO pose), audio processing, and Text-to-Speech. I also have experience developing web applications. As a hobby, I work with audio production: I record and mix tracks in Reaper DAW, and I also do mastering. I use tools like UVR (Universal Vocal Removal) for vocal separation — I often record amateur covers to practice mixing vocals for non-professional singers.",
+    "projects_title": "Projects",
+    "kronos_title": "Kronos — bus and tram delays",
+    "kronos_desc": "Frontend for the Kronos-live application. It displays public transport stops and vehicles with real-time delays, helping users navigate Warsaw using public transportation.",
+    "projects": [
+        {
+            "project_id": "kronos_live",
+            "title": "Kronos-live — public transport delays",
+            "role": "Frontend (Angular)",
+            "short_description": "Frontend for the Kronos-live application. It displays public transport stops and vehicles with real-time delays, helping users move around Warsaw.",
+            "long_description": "Kronos is a custom delay engine (Django) powering the frontend for presenting transport data. My Kronos-live — the Angular frontend — shows a list of stops, upcoming departures, and the vehicle route with current delays. Departure times at stops are corrected relative to official timetables using statistically observed delays. The Django backend is maintained separately. My contribution to it is consultative, so I cannot list it as my own project.",
+            "technologies": [
+                "Angular",
+                "Typescript",
+                "Django (backend)",
+                "Realtime APIs",
+                "Websockets",
+                "Leaflet.js"
+            ],
+            "demo_link": "https://kronos-live.pages.dev/",
+            "image": "/assets/kronos_preview.svg",
+            "videoId": "https://kronos-live.pages.dev/"
+        },
+        {
+            "project_id": "rvc_tts_integration",
+            "title": "AllTalk TTS with RVC",
+            "role": "ML Developer",
+            "short_description": "I am writing an engineering thesis on integrating the AllTalk Text-to-Speech system with the RVC (Retrieval-based Voice Conversion) model to produce the highest-quality speech output.",
+            "long_description": "I use AllTalk to run the XTTS model and then apply voice conversion to achieve the highest possible voice quality. As part of the project, I fine-tuned the XTTS 2.0.2 model and multiple RVC models, resulting in a variety of available voice timbres. I applied DSP audio knowledge to improve speech quality through proper dataset preparation in Reaper DAW and ML knowledge for parameter tuning, dataset diversity, and sample length selection — all to achieve predictable results with short training time on a single consumer GPU. This forms the basis of my engineering thesis.",
+            "technologies": [
+                "Python",
+                "PyTorch",
+                "RVC",
+                "AllTalk TTS",
+                "Audio DSP",
+                "Reaper"
+            ],
+            "demo_link": "",
+            "repo_link": "",
+            "youtube_embed": "https://www.youtube.com/embed/{{id}}",
+            "image": "/images/rvc_tts.png"
+        },
+        {
+            "project_id": "tiktok_clip_generator",
+            "title": "Automatic TikTok Clip Generator from Long-Form Content",
+            "role": "ML / Full-stack Developer",
+            "short_description": "A tool that analyzes long recordings, detects the most interesting moments, and generates clips tailored for formats like TikTok.",
+            "long_description": "The system transcribes the videos then uses an LLM to detect interesting segments. It automatically cuts clips, adjusts them to the appropriate aspect ratio, adds subtitles, and produces ready-to-publish content for social media platforms.",
+            "technologies": [
+                "Python",
+                "LLM",
+                "Video processing",
+                "FFmpeg",
+                "Ollama"
+            ],
+            "demo_link": "",
+            "repo_link": "",
+            "image": "/images/tiktok_generator.png"
+        },
+        {
+            "project_id": "hearing_asymmetry_checker",
+            "title": "WPF App for Checking Hearing Asymmetry",
+            "role": "Developer",
+            "short_description": "A desktop tool that helps determine which ear hears a given frequency better.",
+            "long_description": "The application generates signals at various frequencies and allows users to assess the sensitivity difference between the left and right ear. It was created as a practical tool for preliminary, non-professional evaluation of hearing asymmetry.",
+            "technologies": [
+                "C#",
+                "WPF",
+                "NAudio"
+            ],
+            "demo_link": "",
+            "repo_link": "",
+            "image": "/images/hearing_app.png"
+        }
+    ],
+    "open_demo": "Open demo",
+    "skills_title": "Skills",
+    "skills": [
+        {
+            "name": "Machine Learning",
+            "level": "intermediate"
+        },
+        {
+            "name": "Computer Vision (YOLO det & pose)",
+            "level": "intermediate"
+        },
+        {
+            "name": "Text-to-Speech (AllTalk)",
+            "level": "advanced"
+        },
+        {
+            "name": "RVC — Retrieval Voice Conversion",
+            "level": "advanced"
+        },
+        {
+            "name": "Audio mixing & mastering (Reaper)",
+            "level": "advanced"
+        },
+        {
+            "name": "Python",
+            "level": "advanced"
+        },
+        {
+            "name": "PyTorch",
+            "level": "intermediate"
+        },
+        {
+            "name": "Angular (frontend)",
+            "level": "intermediate"
+        },
+        {
+            "name": "Django (backend)",
+            "level": "intermediate"
+        },
+        {
+            "name": "C#",
+            "level": "intermediate"
+        },
+        {
+            "name": "Video processing & automation",
+            "level": "advanced"
+        },
+        {
+            "name": "Video editing (DaVinci Resolve)",
+            "level": "intermediate"
+        }
+    ],
+    "experience_title": "Experience",
+    "experience": [
+        {
+            "role": "Data Pre-annotation — Computer Vision",
+            "company": "",
+            "start_date": "2025",
+            "end_date": "present",
+            "description": "I handle dataset creation and automation pipelines for training Computer Vision models. By optimizing data selection for fine-tuning, I improve model performance in specialized, demanding use cases."
+        },
+        {
+            "role": "Internship — C# Developer",
+            "company": "",
+            "start_date": "2024",
+            "end_date": "2024",
+            "description": "During the internship, I worked on a library (DLL) for generating SVG files of energy labels. The project enabled updating properties such as noise category (for tires or washing machines), energy class, values, etc. The implementation was based on C# without external dependencies."
+        }
+    ],
+    "education_title": "Education",
+    "education": [
+        {
+            "school": "SGGW — WZIM",
+            "degree": "Computer Science, specialization: cloud technologies",
+            "start_date": "2022 - ",
+            "end_date": "present",
+            "description": "Student — 7th semester"
+        }
+    ],
+    "languages_title": "Languages",
+    "languages": [
+        {
+            "language": "Polish",
+            "level": "native"
+        },
+        {
+            "language": "English",
+            "level": "C1"
+        }
+    ],
+    "contact": {
+        "contact_title": "Contact",
+        "email": "{{email_from_external_file}}",
+        "phone": "{{phone_from_external_file}}",
+        "location": "Poland",
+        "github_url": "https://github.com/twoj_github",
+        "website_url": "https://twojastrona.com"
     },
-    {
-      "project_id": "tiktok_clip_generator",
-      "title": "Automatic TikTok Clip Generator from Long-form Content",
-      "role": "ML / Full-stack Developer",
-      "short_description": "Tool that analyzes long videos, detects interesting moments and generates TikTok-ready clips.",
-      "long_description": "The system uses LLM transcription to detect noteworthy segments in long-form content, automatically cuts fragments, adapts them to the correct aspect ratio, adds subtitles, and outputs ready-to-publish clips — ideal for TikTok / social media sharing.",
-      "technologies": ["Python", "LLM", "Video processing", "FFmpeg", "Frontend (Angular)", "Backend (Django)"],
-      "demo_link": "",
-      "repo_link": "",
-      "image": "/images/tiktok_generator.png"
-    },
-    {
-      "project_id": "hearing_asymmetry_checker",
-      "title": "Hearing Asymmetry Checker (WPF)",
-      "role": "Developer",
-      "short_description": "Desktop tool for checking which ear is more sensitive to certain frequencies.",
-      "long_description": "The application generates audio tones with adjustable frequency and volume, enabling the user to determine sensitivity differences between left and right ear. Created as a simple tool for amateur hearing asymmetry analysis.",
-      "technologies": ["C#", "WPF", "NAudio"],
-      "demo_link": "",
-      "repo_link": "",
-      "image": "/images/hearing_app.png"
-    },
-    {
-      "project_id": "small_scripts_collection",
-      "title": "Collection of ML Tools and Scripts",
-      "role": "Developer",
-      "short_description": "Set of small utilities and scripts supporting ML, CV and audio experiments.",
-      "long_description": "Various tools for data preprocessing, quick model testing, file conversion and basic image/audio analysis. Many were created to support ML research, as well as TTS and RVC audio processing.",
-      "technologies": ["Python", "NumPy", "OpenCV"],
-      "repo_link": "",
-      "image": "/images/scripts.png"
+    "meta": {
+        "multilanguage": true,
+        "last_updated": "2025-12-03"
     }
-    
-  ],
-  "open_demo": "Open demo",
-
-  "skills_title": "Skills",
-  "skills": [
-    {"name": "Machine Learning", "level": "advanced"},
-    {"name": "Computer Vision (YOLO det & pose)", "level": "advanced"},
-    {"name": "Text-to-Speech (AllTalk)", "level": "intermediate"},
-    {"name": "RVC — Retrieval Voice Conversion", "level": "intermediate"},
-    {"name": "Audio mixing & mastering (Reaper)", "level": "intermediate"},
-    {"name": "Python", "level": "advanced"},
-    {"name": "PyTorch", "level": "intermediate"},
-    {"name": "Angular (frontend)", "level": "intermediate"},
-    {"name": "Django (backend)", "level": "intermediate"},
-    {"name": "C#", "level": "intermediate"},
-    {"name": "Video processing & automation", "level": "intermediate"}
-  ],
-
-  "experience_title": "Experience",
-  "experience": [
-    {
-      "role": "Intern — C# Developer",
-      "company": "—",
-      "start_date": "",
-      "end_date": "",
-      "description": "During the internship I worked on an application for editing SVG files used to generate EU Power Labels. The project included dynamic placement of energy categories, automatic pointer movement, value updates and visual adjustments. Implementation was based on C# and manipulation of the SVG structure."
-    }
-  ],
-
-  "education_title": "Education",
-  "education": [
-    {
-      "school": "SGGW — WZIM",
-      "degree": "Computer Science, specialization: Cloud Technologies",
-      "start_date": "",
-      "end_date": "",
-      "description": "Student"
-    }
-  ],
-
-  "languages_title": "Languages",
-  "languages": [
-    {"language": "Polish", "level": "native"},
-    {"language": "English", "level": "C1 (practical, no certificate)"}
-  ],
-
-  "contact": {
-    "contact_title": "Contact",
-    "email": "{{email_from_external_file}}",
-    "phone": "{{phone_from_external_file}}",
-    "location": "Poland",
-    "github_url": "https://github.com/twoj_github",
-    "website_url": "https://twojastrona.com"
-  },
-
-  "meta": {
-    "multilanguage": true,
-    "last_updated": "2025-11-26"
-  }
 }
