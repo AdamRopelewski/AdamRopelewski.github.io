@@ -7,14 +7,20 @@
     ,"demo_link": "https://kronos-live.pages.dev/"
   },
   {
-    "id": "proj1",
+    "id": "rvc_tts_integration",
     "videoId": "dQw4w9WgXcQ",
     "titleKey": "proj1_title",
     "descKey": "proj1_desc"
   },
   {
-    "id": "proj2",
-    "videoId": "VIDEO_ID_2",
+    "id": "tiktok_clip_generator",
+    "videoId": "dQw4w9WgXcQ",
+    "titleKey": "proj2_title",
+    "descKey": "proj2_desc"
+  },
+  {
+    "id": "hearing_asymmetry_checker",
+    "videoId": "dQw4w9WgXcQ",
     "titleKey": "proj2_title",
     "descKey": "proj2_desc"
   }

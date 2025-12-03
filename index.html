@@ -20,11 +20,9 @@
     </a>
 
     <div class="controls">
-      <label class="lang-switch">
-        <select id="langSelect" aria-label="Language switch">
-          <option value="en">English</option>
-          <option value="pl">Polski</option>
-        </select>
+      <label class="lang-switch flag-mode" aria-label="Language switch">
+        <button class="lang-btn" data-lang="pl" aria-pressed="false" aria-label="Polski">🇵🇱</button>
+        <button class="lang-btn" data-lang="en" aria-pressed="false" aria-label="English">🇺🇸</button>
       </label>
       <button id="themeToggle" aria-pressed="true" title="Toggle theme">🌙</button>
     </div>
@@ -37,7 +35,7 @@
           <h2 class="hero-title" data-i18n="hero_title">Loading...</h2>
           <p class="hero-sub" data-i18n="hero_subtitle">Loading...</p>
           <div class="hero-cta">
-            <a class="cv-btn" href="assets/Adam_Ropelewski_CV.pdf" download data-i18n="download_cv_text">Download CV</a>
+            <a class="cta-btn" href="assets/Adam_Ropelewski_CV.pdf" download data-i18n="download_cv_text">Download CV</a>
           </div>
         </div>
         <!-- hero-image removed per request; hero is text-only by default -->
@@ -59,17 +57,17 @@
       <h2 data-i18n="projects_title">Projects</h2>
       <div class="projects-grid"></div>
 
-      <div class="video-wrapper">
-        <h3 data-i18n="video_title">Project showcase</h3>
+      <div class="showcase-wrapper">
+        <h3 data-i18n="showcase_title">Project showcase</h3>
         <h4 class="selected-project-title"></h4>
         <p class="selected-project-desc"></p>
-        <div class="video-placeholder">
+        <div class="showcase-placeholder">
           <iframe id="ytFrame" width="560" height="315" src="" title="Project demo iframe" frameborder="0" allowfullscreen></iframe>
           <img id="projectImg" alt="Project visual" class="hidden" />
         </div>
-        <p class="video-note" data-i18n="video_note"></p>
-        <div class="video-cta">
-          <a id="projectDemoLink" class="selected-project-cta hidden" href="" target="_blank" rel="noopener noreferrer" data-i18n="open_demo">Open demo</a>
+        <p class="showcase-note" data-i18n="showcase_note"></p>
+        <div class="showcase-cta">
+          <a id="projectDemoLink" class="selected-project-cta hidden cta-btn" href="" target="_blank" rel="noopener noreferrer" data-i18n="open_demo">Open demo</a>
         </div>
       </div>
     </section>

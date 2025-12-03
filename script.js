@@ -147,7 +147,7 @@ function renderProjects() {
     grid.addEventListener('click', (ev) => {
       const clickedCard = ev.target.closest && ev.target.closest('.project-card')
       if (clickedCard) {
-        console.debug('grid delegated click ->', clickedCard.getAttribute('data-project-id')||clickedCard.getAttribute('data-video-id'))
+        console.debug('grid delegated click ->', clickedCard.getAttribute('data-project-id') || clickedCard.getAttribute('data-video-id'))
         activateCard(clickedCard)
       }
     })
@@ -168,6 +168,7 @@ const projectCards = () => Array.from(document.querySelectorAll('.project-card')
 // Set the iframe to YouTube or arbitrary URL; also update active card state and selected info
 function setVideo(id, autoplay = false) {
   const iframe = document.getElementById('ytFrame')
+  console.debug('setVideo called with id:', id, 'autoplay:', autoplay)
   if (!id) { if (iframe) iframe.setAttribute('src', ''); return }
   let url = id
   // Determine whether we should embed this id/url in an iframe or treat it as external
@@ -180,6 +181,7 @@ function setVideo(id, autoplay = false) {
     try {
       const u = new URL(id)
       const host = (u.hostname || '').toLowerCase()
+      console.debug('setVideo parsed host:', host)
       if (host.includes('youtube.com') || host.includes('youtu.be') || host.includes('vimeo.com') || host.includes('player.vimeo.com') || ALLOWED_EMBED_HOSTS.has(host)) {
         useIframe = true
       } else {
@@ -188,7 +190,6 @@ function setVideo(id, autoplay = false) {
     } catch (err) {
       useIframe = false
     }
-  }
   // ensure iframe is used for embeddable hosts; otherwise, clear it and show the project's image if present
   const projectImg = document.getElementById('projectImg')
   if (!useIframe) {
@@ -197,12 +198,48 @@ function setVideo(id, autoplay = false) {
       // show placeholder image for the currently selected card
       const selected = document.querySelector('.project-card.active')
       const imgSrc = selected && selected.getAttribute('data-image')
-      if (imgSrc) { projectImg.setAttribute('src', imgSrc); projectImg.classList.remove('hidden') } else { projectImg.classList.add('hidden') }
+      if (imgSrc) {
+        projectImg.setAttribute('src', imgSrc)
+        projectImg.classList.remove('hidden')
+      } else {
+        projectImg.classList.add('hidden')
+      }
     }
   } else {
     if (projectImg) { projectImg.setAttribute('src', ''); projectImg.classList.add('hidden') }
-    if (iframe) iframe.setAttribute('src', url)
-  }
+    if (iframe) {
+      // Add a short timeout to detect embed failures (e.g., blocked by X-Frame-Options).
+      let iframeLoaded = false
+      const onLoad = () => { iframeLoaded = true; iframe.removeEventListener('load', onLoad); iframe.removeEventListener('error', onError); console.debug('iframe loaded', url) }
+      const onError = () => { iframeLoaded = false; iframe.removeEventListener('load', onLoad); iframe.removeEventListener('error', onError); console.warn('iframe error', url) }
+      iframe.addEventListener('load', onLoad)
+      iframe.addEventListener('error', onError)
+      iframe.setAttribute('src', url)
+      // After a short timeout, if not loaded and the content is external (http) then fallback to demo link or image.
+      setTimeout(() => {
+        if (!iframeLoaded && id.startsWith('http') && !hostIncludesYouTube(id)) {
+          console.warn('iframe failed to load or blocked; falling back to demo link for', id)
+          // hide iframe and show project image or demo link
+          iframe.setAttribute('src', '')
+          if (projectImg && projectImg.getAttribute('src')) { projectImg.classList.remove('hidden') }
+          const demoEl = document.getElementById('projectDemoLink')
+          // Only show the demo link for the Kronos project (non-embeddable external demos are hidden by default)
+          if (demoEl) {
+            const matchingCard = document.querySelector(`.project-card[data-demo-link="${id}"]`)
+            let showDemo = false
+            if (matchingCard) {
+              const pid = matchingCard.getAttribute('data-project-id') || ''
+              if (pid === 'kronos_live') showDemo = true
+              else {
+                try { const u = new URL(id); if (u.hostname.includes('kronos-live.pages.dev')) showDemo = true } catch (err) {}
+              }
+            }
+            if (showDemo) { demoEl.classList.remove('hidden'); demoEl.focus({ preventScroll: true }) }
+          }
+        }
+      }, 1600)
+    }
+    }
   projectCards().forEach(c => {
     const isMatch = c.getAttribute('data-video-id') === id || c.getAttribute('data-demo-link') === id || c.getAttribute('data-youtube') === id
     if (isMatch) {
@@ -226,17 +263,33 @@ function setVideo(id, autoplay = false) {
     const demoLinkEl = document.getElementById('projectDemoLink')
     if (demoLinkEl) {
       const projectDemoUrl = selected.getAttribute('data-demo-link') || ''
+      const projectId = selected.getAttribute('data-project-id') || ''
+      let showDemo = false
       if (projectDemoUrl) {
+        try {
+          const u = new URL(projectDemoUrl)
+          if (projectId === 'kronos_live' || u.hostname.includes('kronos-live.pages.dev')) showDemo = true
+        } catch (err) {
+          if (projectId === 'kronos_live') showDemo = true
+        }
+      }
+      if (showDemo) {
         demoLinkEl.setAttribute('href', projectDemoUrl)
+        // prefer Kronos to use the main CTA button style
+        demoLinkEl.classList.remove('selected-project-cta')
+        demoLinkEl.classList.add('cta-btn')
         demoLinkEl.classList.remove('hidden')
         demoLinkEl.textContent = strings['open_demo'] || strings['view_demo'] || 'Open demo'
       } else {
         demoLinkEl.setAttribute('href', '')
+        demoLinkEl.classList.remove('cta-btn')
+        demoLinkEl.classList.add('selected-project-cta')
         demoLinkEl.classList.add('hidden')
         demoLinkEl.textContent = ''
       }
     }
   }
+}
 }
 
 // human-friendly label for external demo links
@@ -254,6 +307,7 @@ function friendlyLabelForUrl(url) {
 // Activate the card and set the video or demo link as appropriate
 function activateCard(card) {
   let vid = card.getAttribute('data-video-id')
+  console.debug('activateCard:', { project: card.getAttribute('data-project-id'), videoId: vid, youtube: card.getAttribute('data-youtube'), demo: card.getAttribute('data-demo-link') })
   if (!vid) vid = card.getAttribute('data-youtube') || ''
   // When the user interacts with the project (click/keyboard), scroll the showcase
   selectProject(card, true)
@@ -283,8 +337,21 @@ function selectProject(card, scroll = false) {
   const demoLinkEl = document.getElementById('projectDemoLink')
   if (demoLinkEl) {
     const projectDemoUrl = card.getAttribute('data-demo-link') || ''
+    const projectId = card.getAttribute('data-project-id') || ''
+    let showDemo = false
     if (projectDemoUrl) {
+      try {
+        const u = new URL(projectDemoUrl)
+        if (projectId === 'kronos_live' || u.hostname.includes('kronos-live.pages.dev')) showDemo = true
+      } catch (err) {
+        if (projectId === 'kronos_live') showDemo = true
+      }
+    }
+    if (showDemo) {
       demoLinkEl.setAttribute('href', projectDemoUrl)
+      // For specific projects like kronos_live, use primary CTA styling (same as CV button)
+      demoLinkEl.classList.remove('selected-project-cta')
+      demoLinkEl.classList.add('cta-btn')
       demoLinkEl.classList.remove('hidden')
       // If demo is an external url, show its hostname (e.g. kronos-live.pages.dev)
       // This makes it explicit that clicking will open an external page
@@ -312,7 +379,7 @@ function selectProject(card, scroll = false) {
   }
   // Scroll and focus only when explicitly requested (e.g., user click/keyboard interaction)
   if (scroll) {
-    const showcase = document.querySelector('.video-wrapper')
+    const showcase = document.querySelector('.showcase-wrapper')
     if (showcase) {
       try { showcase.scrollIntoView({ behavior: 'smooth', block: 'start' }) } catch (err) { showcase.scrollIntoView() }
       // for accessibility focus on the main element inside the showcase
@@ -368,7 +435,7 @@ async function loadSettingsAndContent() {
   if (profile.fullName) { document.title = `${profile.fullName} — Portfolio` }
 
   // set CV link if content doesn't provide a language-specific link
-  const cvEl = document.querySelectorAll('.cv-btn')
+  const cvEl = document.querySelectorAll('.cta-btn')
   if (!strings.download_cv_links && profile.cvFile) {
     cvEl.forEach(el => el.setAttribute('href', profile.cvFile))
   }
@@ -411,11 +478,11 @@ async function init() {
   const savedTheme = localStorage.getItem('theme') || settings.defaultTheme
   applyTheme(savedTheme)
 
-  // populate selects
-  const langSelect = document.getElementById('langSelect')
-  langSelect.value = localStorage.getItem('lang') || settings.defaultLanguage
-  langSelect.addEventListener('change', async e => {
-    const v = e.target.value
+  // populate language switch — supports both select and flag buttons
+  const langSwitch = document.querySelector('.lang-switch')
+  const savedLang = localStorage.getItem('lang') || settings.defaultLanguage
+
+  async function applyLanguageChange(v) {
     localStorage.setItem('lang', v)
     // reload content for the new language and rerender
     let c = await loadJson(`content/${v}.json`)
@@ -438,7 +505,34 @@ async function init() {
     renderProjects()
     const brand = document.getElementById('brandLink')
     if (brand && profile && profile.fullName) { brand.setAttribute('aria-label', `Go to homepage — ${profile.fullName}`) }
-  })
+    // update buttons/select state to reflect the newly selected language
+    if (langSwitch) {
+      const select = langSwitch.querySelector('select')
+      if (select) select.value = v
+      const btns = langSwitch.querySelectorAll('.lang-btn')
+      if (btns && btns.length) btns.forEach(b => b.setAttribute('aria-pressed', b.getAttribute('data-lang') === v ? 'true' : 'false'))
+    }
+  }
+
+  // If the lang-switch contains a <select> element, preserve existing UX; otherwise wire up flag buttons.
+  if (langSwitch) {
+    const select = langSwitch.querySelector('select')
+    if (select) {
+      select.value = savedLang
+      select.addEventListener('change', async e => await applyLanguageChange(e.target.value))
+    } else {
+      const btns = langSwitch.querySelectorAll('.lang-btn')
+      Array.from(btns).forEach(b => {
+        const lang = b.getAttribute('data-lang')
+        b.setAttribute('aria-pressed', lang === savedLang ? 'true' : 'false')
+        b.addEventListener('click', async (e) => {
+          btns.forEach(x => x.setAttribute('aria-pressed', 'false'))
+          b.setAttribute('aria-pressed', 'true')
+          await applyLanguageChange(lang)
+        })
+      })
+    }
+  }
 
   // theme toggle
   const themeToggle = document.getElementById('themeToggle')
@@ -484,7 +578,7 @@ async function init() {
   }
 
 
-  
+
 
   // helper to update project node text and aria on language change
   function updateProjectLabels() {
@@ -499,14 +593,32 @@ async function init() {
       const titleTxt = titleEl ? titleEl.textContent : 'Project'
       card.setAttribute('aria-label', titleTxt)
     })
-    // update demo link text if visible
+    // update demo link text if visible — only show for Kronos
     const demoLinkEl = document.getElementById('projectDemoLink')
     if (demoLinkEl) {
-        // If the currently selected project points to an external URL, prefer showing hostname
-        const active = document.querySelector('.project-card.active')
-        const activeDemo = active && active.getAttribute('data-demo-link')
-        if (activeDemo) demoLinkEl.textContent = friendlyLabelForUrl(activeDemo) || strings['open_demo'] || strings['view_demo'] || 'Open demo'
-        else demoLinkEl.textContent = strings['open_demo'] || strings['view_demo'] || 'Open demo'
+      const active = document.querySelector('.project-card.active')
+      const activeDemo = active && active.getAttribute('data-demo-link')
+      let showDemo = false
+      if (active && activeDemo) {
+        const pid = active.getAttribute('data-project-id') || ''
+        try {
+          const u = new URL(activeDemo)
+          if (pid === 'kronos_live' || u.hostname.includes('kronos-live.pages.dev')) showDemo = true
+        } catch (err) {
+          if (pid === 'kronos_live') showDemo = true
+        }
+      }
+      if (showDemo) {
+        demoLinkEl.textContent = friendlyLabelForUrl(activeDemo) || strings['open_demo'] || strings['view_demo'] || 'Open demo'
+        demoLinkEl.classList.remove('hidden')
+        demoLinkEl.classList.remove('selected-project-cta')
+        demoLinkEl.classList.add('cta-btn')
+      } else {
+        demoLinkEl.textContent = ''
+        demoLinkEl.classList.remove('cta-btn')
+        demoLinkEl.classList.add('selected-project-cta')
+        demoLinkEl.classList.add('hidden')
+      }
     }
   }
 
@@ -515,7 +627,7 @@ async function init() {
     const heroTitle = document.querySelector('.hero-title')
     const heroSub = document.querySelector('.hero-sub')
     const profilePic = document.querySelector('.profile-card .profile-pic')
-    const cta = document.querySelector('.hero-cta .cv-btn')
+    const cta = document.querySelector('.hero-cta .cta-btn')
     if (strings.hero_title) heroTitle.textContent = strings.hero_title
     if (strings.hero_subtitle) heroSub.textContent = strings.hero_subtitle
     // set profile image in profile card (prefer content, otherwise use profile.json or fallback)
@@ -588,21 +700,21 @@ async function init() {
   }
 
   // CV button animation: add 'active' class briefly on click (or keyboard activation)
-  const cvButton = document.querySelector('.cv-btn')
-  if (cvButton) {
+  const ctaButton = document.querySelector('.cta-btn')
+  if (ctaButton) {
     const animate = (e) => {
       // add active state
-      cvButton.classList.add('active')
+      ctaButton.classList.add('active')
       // remove the active state after a short interval
-      setTimeout(() => cvButton.classList.remove('active'), 550)
+      setTimeout(() => ctaButton.classList.remove('active'), 550)
     }
-    cvButton.addEventListener('click', animate)
-    cvButton.addEventListener('keydown', (e) => {
+    ctaButton.addEventListener('click', animate)
+    ctaButton.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
         e.preventDefault()
         animate()
         // allow default anchor behavior to continue after animation
-        setTimeout(() => { window.location.href = cvButton.getAttribute('href') }, 120)
+        setTimeout(() => { window.location.href = ctaButton.getAttribute('href') }, 120)
       }
     })
   }
