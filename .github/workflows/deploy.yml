@@ -19,13 +19,7 @@ jobs:
         run: |
           echo "Creating profile.json from secret"
           echo "$PROFILE_JSON" > profile.json
-
-      - name: Debug: Verify profile.json existence (non-sensitive check)
-        run: |
-          echo "Root files for build step:"
-          ls -la
-          if [ -f profile.json ]; then echo "profile.json exists"; wc -c profile.json; else echo "profile.json is not present"; fi
-
+          
       - name: Setup pages
         uses: actions/configure-pages@v2
 
